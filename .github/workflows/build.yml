@@ -9,12 +9,13 @@ on:
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
-      - matrix.os: ubuntu-latest
-        matrix.ninja_target: linux
-#      - matrix.os: windows-latest
-#        matrix.ninja_target: win
+        os: [ubuntu-latest]
+        include:
+          - os: ubuntu-latest
+            ninja_target_os: linux
+          - os: windows-latest
+            ninja_target_os: win
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v4
