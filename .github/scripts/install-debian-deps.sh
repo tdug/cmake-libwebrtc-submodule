@@ -3,9 +3,7 @@ sudo apt install -y \
     generate-ninja \
     libasound2-dev \
     libdbus-1-dev \
-    libgconf2-dev \
     libglib2.0-dev \
-    libgnome-keyring-dev \
     libgtk2.0-dev \
     libnss3-dev \
     libpci-dev \
@@ -13,3 +11,6 @@ sudo apt install -y \
     libxtst-dev \
     libxss-dev \
     libudev-dev
+# libwebrtc says the following two are required,
+# but they aren't found in the package index.
+# libgconf2-dev libgnome-keyring-dev
