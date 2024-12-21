@@ -10,8 +10,8 @@ jobs:
   build:
     strategy:
       matrix:
-#        os: [ubuntu-latest, windows-latest, macos-latest]
         os: [ubuntu-latest]
+#        os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
             ninja_target_os: linux
@@ -26,12 +26,12 @@ jobs:
       run: .github/scripts/install-debian-deps.sh
 
     - name: Install macOS Dependencies
-      if: runner.os == 'macos-14'
-      run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer && HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl@3
+      if: runner.os == 'macOS'
+      run: .github/scripts/install-macos-deps.sh
 
     - name: Install Windows Dependencies
       if: runner.os == 'Windows'
-      run: choco install openssl --version=3.1.1
+      run: .github\scripts\install-windows-deps.ps1
 
     - name: Configure CMake
       run: cmake -S . -B ${{github.workspace}}/build
