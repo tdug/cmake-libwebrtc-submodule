@@ -1,4 +1,4 @@
-apt install \
+sudo apt install -y \
     build-essential \
     generate-ninja \
     libasound2-dev \
