@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+      - matrix.os: ubuntu-latest
+        matrix.ninja_target: linux
+#      - matrix.os: windows-latest
+#        matrix.ninja_target: win
+    runs-on: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Debian Dependencies
+      if: runner.os == 'Linux'
+      run: .github/scripts/install-debian-deps.sh
+
+    - name: Install macOS Dependencies
+      if: runner.os == 'macos-14'
+      run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer && HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl@3
+
+    - name: Install Windows Dependencies
+      if: runner.os == 'Windows'
+      run: choco install openssl --version=3.1.1
+
+    - name: Configure CMake
+      run: cmake -S . -B ${{github.workspace}}/build
