@@ -28,12 +28,12 @@ jobs:
     - run: ls -la .github/templates
 
     - name: Create .gclient file
-      uses: vmactions/render@main
-      env:
-        gclient_os_tag: ${{matrix.gclient_os_tag}}
+      uses: elieahd/templater@v1
       with:
-        files: |
-          .github/templates/.gclient : .gclient
+        template: .github/templates/.gclient
+        file: .gclient
+        variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
+    - run: cat .gclient
 
     - name: gclient sync
       run: gclient sync
