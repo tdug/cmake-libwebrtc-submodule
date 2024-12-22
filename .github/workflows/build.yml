@@ -35,6 +35,15 @@ jobs:
         file: build/.gclient
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
 
+    - name: Set Windows Environment Variables
+      if: matrix.os == 'windows-latest'
+      env:
+        DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+        GYP_MSVS_VERSION: 2022
+        GYP_GENERATORS: ninja,msvs-ninja
+        GYP_MSVS_OVERRIDE_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2022\Community
+      run: echo "Environment variables set. Continuing build process..."
+
     - name: gclient sync
       working-directory: build
       run: gclient sync
