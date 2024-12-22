@@ -10,28 +10,50 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
-#        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            ninja_target_os: linux
-#          - os: windows-latest
-#            ninja_target_os: win
+            gclient_os_tag: linux
+          - os: windows-latest
+            gclient_os_tag: win
+          - os: macos-latest
+            gclient_os_tag: mac
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Debian Dependencies
-      if: runner.os == 'Linux'
-      run: .github/scripts/install-debian-deps.sh
+    - name: Install Depot Tools
+      uses: newkdev/setup-depot-tools@v1.0.1
 
-    - name: Install macOS Dependencies
-      if: runner.os == 'macOS'
-      run: .github/scripts/install-macos-deps.sh
+    - name: Create .gclient file
+      uses: vmactions/render@main
+      env:
+        gclient_os_tag: ${{matrix.gclient_os_tag}}
+      with:
+        files: |
+          .github/templates/.gclient : .gclient
 
-    - name: Install Windows Dependencies
-      if: runner.os == 'Windows'
-      run: .github\scripts\install-windows-deps.ps1
+    - name: gclient sync
+      run: gclient sync
 
-    - name: Configure CMake
-      run: cmake -S . -B ${{github.workspace}}/build
+    - name: Clone libwebrtc
+      uses: actions/checkout@v4
+      with:
+        repository: webrtc-sdk/webrtc
+        ref: refs/remotes/origin/master
+
+    - name: Add libwebrtc to default group
+      run: git apply .github/patches/add-libwebrtc-to-default-group.patch
+
+    # - name: Install Debian Dependencies
+    #   if: runner.os == 'Linux'
+    #   run: .github/scripts/install-debian-deps.sh
+
+    # - name: Install macOS Dependencies
+    #   if: runner.os == 'macOS'
+    #   run: .github/scripts/install-macos-deps.sh
+
+    # - name: Install Windows Dependencies
+    #   if: runner.os == 'Windows'
+    #   run: .github\scripts\install-windows-deps.ps1
+

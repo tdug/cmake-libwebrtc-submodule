@@ -1,3 +1,0 @@
-[submodule "libwebrtc"]
-	path = libwebrtc
-	url = https://github.com/webrtc-sdk/libwebrtc
