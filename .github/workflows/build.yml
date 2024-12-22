@@ -3,18 +3,8 @@ name: Build
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - '.github/workflows/build.yml'
-      - '.github/templates/**'
-      - '.github/scripts/**'
-      - '.github/patches/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - '.github/workflows/build.yml'
-      - '.github/templates/**'
-      - '.github/scripts/**'
-      - '.github/patches/**'
 
 jobs:
   build:
@@ -34,6 +24,8 @@ jobs:
 
     - name: Install Depot Tools
       uses: newkdev/setup-depot-tools@v1.0.1
+
+    - run: ls -la
 
     - name: Create .gclient file
       uses: vmactions/render@main
