@@ -25,7 +25,7 @@ jobs:
     - name: Install Depot Tools
       uses: newkdev/setup-depot-tools@v1.0.1
 
-    - run: ls -la
+    - run: ls -la .github/templates
 
     - name: Create .gclient file
       uses: vmactions/render@main
