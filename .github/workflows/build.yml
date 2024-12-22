@@ -28,15 +28,12 @@ jobs:
     - name: Create build directory
       run: mkdir -p build
 
-    - run: ls -la .github/templates
-
     - name: Create .gclient file
       uses: elieahd/templater@v1
       with:
         template: .github/templates/.gclient
         file: build/.gclient
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
-    - run: cat build/.gclient
 
     - name: gclient sync
       working-directory: build
