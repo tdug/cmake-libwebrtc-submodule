@@ -25,17 +25,21 @@ jobs:
     - name: Install Depot Tools
       uses: newkdev/setup-depot-tools@v1.0.1
 
+    - name: Create build directory
+      run: mkdir -p build
+
     - run: ls -la .github/templates
 
     - name: Create .gclient file
       uses: elieahd/templater@v1
       with:
         template: .github/templates/.gclient
-        file: .gclient
+        file: build/.gclient
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
-    - run: cat .gclient
+    - run: cat build/.gclient
 
     - name: gclient sync
+      working-directory: build
       run: gclient sync
 
     - name: Clone libwebrtc
@@ -43,6 +47,7 @@ jobs:
       with:
         repository: webrtc-sdk/webrtc
         ref: refs/remotes/origin/master
+        destination: build/webrtc
 
     - name: Add libwebrtc to default group
       run: git apply .github/patches/add-libwebrtc-to-default-group.patch
