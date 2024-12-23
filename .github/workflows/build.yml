@@ -44,8 +44,6 @@ jobs:
         echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-    
-
     # - name: Install Debian Dependencies
     #   if: runner.os == 'Linux'
     #   run: .github/scripts/install-debian-deps.sh
