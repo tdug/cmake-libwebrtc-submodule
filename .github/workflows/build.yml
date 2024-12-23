@@ -61,14 +61,7 @@ jobs:
       working-directory: build/src
       run: git apply .github/patches/add-libwebrtc-to-default-group.patch
 
-    - name: Generate Ninja Build Files
-      working-directory: build/src
-      run: gn gen out/Default
-
-    - name: Run Ninja Build
-      working-directory: build/src
-      run: ninja -C out/Default
-
+    # Unsure if these are needed...
     # - name: Install Debian Dependencies
     #   if: runner.os == 'Linux'
     #   run: .github/scripts/install-debian-deps.sh
@@ -81,3 +74,10 @@ jobs:
     #   if: runner.os == 'Windows'
     #   run: .github\scripts\install-windows-deps.ps1
 
+    - name: Generate Ninja Build Files
+      working-directory: build/src
+      run: gn gen out/Default
+
+    - name: Run Ninja Build
+      working-directory: build/src
+      run: ninja -C out/Default
