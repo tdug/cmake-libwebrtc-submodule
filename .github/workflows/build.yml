@@ -48,7 +48,7 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --wait"
-        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
+#        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
 
     - name: gclient sync
       working-directory: build
