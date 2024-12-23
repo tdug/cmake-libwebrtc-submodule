@@ -60,7 +60,7 @@ jobs:
 
     - name: Generate Ninja Build Files
       working-directory: build/src
-      run: gn gen out/Default
+      run: gn gen out/Default --args='cflags_cc=["-Wno-static-assert"]'
 
     - name: Install Debian Dependencies
       if: runner.os == 'Linux'
