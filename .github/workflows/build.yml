@@ -47,8 +47,8 @@ jobs:
     - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
       if: runner.os == 'Windows'
       run: |
-        choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --wait"
-        dir "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+        choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --wait"
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
 
     - name: gclient sync
       working-directory: build
@@ -61,7 +61,7 @@ jobs:
     - name: Generate Ninja Build Files
       working-directory: build/src
       run: gn gen out/Default
-      
+
     - name: Install Debian Dependencies
       if: runner.os == 'Linux'
       run: .github/scripts/install-debian-deps.sh
