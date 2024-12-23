@@ -29,12 +29,12 @@ jobs:
     - name: Create build directory
       run: mkdir -p build
 
-    - name: Create .gclient file
-      uses: elieahd/templater@v1
-      with:
-        template: .github/templates/.gclient
-        file: build/.gclient
-        variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
+    # - name: Create .gclient file
+    #   uses: elieahd/templater@v1
+    #   with:
+    #     template: .github/templates/.gclient
+    #     file: build/.gclient
+    #     variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
 
     - name: Fetch libwebrtc
       working-directory: build
