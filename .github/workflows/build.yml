@@ -47,7 +47,7 @@ jobs:
     - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
       if: runner.os == 'Windows'
       run: |
-        choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --wait"
+        choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet --wait"
 #        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
 
     - name: gclient sync
