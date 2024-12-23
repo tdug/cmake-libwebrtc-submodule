@@ -44,6 +44,20 @@ jobs:
         echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
 
+    
+
+    # - name: Install Debian Dependencies
+    #   if: runner.os == 'Linux'
+    #   run: .github/scripts/install-debian-deps.sh
+
+    # - name: Install macOS Dependencies
+    #   if: runner.os == 'macOS'
+    #   run: .github/scripts/install-macos-deps.sh
+
+    - name: Install Windows Dependencies
+      if: runner.os == 'Windows'
+      run: .github\scripts\install-windows-deps.ps1
+
     # - name: Fetch libwebrtc [Unix]
     #   working-directory: build
     #   run: fetch --nohooks webrtc
@@ -71,18 +85,6 @@ jobs:
     # - name: Add libwebrtc to default group
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
-
-    # - name: Install Debian Dependencies
-    #   if: runner.os == 'Linux'
-    #   run: .github/scripts/install-debian-deps.sh
-
-    # - name: Install macOS Dependencies
-    #   if: runner.os == 'macOS'
-    #   run: .github/scripts/install-macos-deps.sh
-
-    # - name: Install Windows Dependencies
-    #   if: runner.os == 'Windows'
-    #   run: .github\scripts\install-windows-deps.ps1
 
     - name: Generate Ninja Build Files
       working-directory: build/src

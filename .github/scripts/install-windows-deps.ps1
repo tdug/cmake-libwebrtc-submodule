@@ -1,1 +1,1 @@
-choco install openssl
+choco install openssl visualstudio2022buildtools
