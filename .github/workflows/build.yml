@@ -69,7 +69,7 @@ jobs:
 
     - name: Add libwebrtc to default group
       working-directory: build/src
-      run: git apply .github/patches/add-libwebrtc-to-default-group.patch
+      run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
     - name: Install Debian Dependencies
       if: runner.os == 'Linux'
