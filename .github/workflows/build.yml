@@ -44,9 +44,18 @@ jobs:
         GYP_MSVS_OVERRIDE_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2022\Community
       run: echo "Environment variables set. Continuing build process..."
 
-    - name: gclient sync
+    - name: gclient sync [Unix]
+      if: matrix.os != 'windows-latest'
       working-directory: build
       run: gclient sync
+
+    - name: gclient sync [Windows]  
+      if: matrix.os == 'windows-latest'
+      working-directory: build
+      run: |
+        python3 src/build/landmines.py --landmine-scripts src/tools_webrtc/get_landmines.py --src-dir src
+        python3 src/build/vs_toolchain.py update --force
+        gclient sync
 
     - name: Clone libwebrtc
       uses: actions/checkout@v4
