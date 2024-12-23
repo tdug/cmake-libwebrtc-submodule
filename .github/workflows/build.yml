@@ -39,10 +39,10 @@ jobs:
     - name: Set Environment Variables [Windows]
       if: matrix.os == 'windows-latest'
       run: |
-        echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" >> $GITHUB_ENV
-        echo "GYP_MSVS_VERSION=2022" >> $GITHUB_ENV
-        echo "GYP_GENERATORS=ninja,msvs-ninja" >> $GITHUB_ENV
-        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" >> $GITHUB_ENV
+        echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     # - name: Fetch libwebrtc [Unix]
     #   working-directory: build
