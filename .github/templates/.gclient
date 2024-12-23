@@ -9,4 +9,4 @@ solutions = [
     "custom_vars": {},
   },
 ]
-target_os  = [{{gclient_os_tag}}]
+target_os  = ['{{gclient_os_tag}}']

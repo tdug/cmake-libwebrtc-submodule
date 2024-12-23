@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
@@ -25,35 +26,60 @@ jobs:
     - name: Install Depot Tools
       uses: newkdev/setup-depot-tools@v1.0.1
 
+    - name: Create build directory
+      run: mkdir -p build
+
     - name: Create .gclient file
-      uses: vmactions/render@main
-      env:
-        gclient_os_tag: ${{matrix.gclient_os_tag}}
+      uses: elieahd/templater@v1
       with:
-        files: |
-          .github/templates/.gclient : .gclient
+        template: .github/templates/.gclient
+        file: build/.gclient
+        variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
+
+    - name: Set Environment Variables [Windows]
+      if: runner.os == 'Windows'
+      run: |
+        echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
+      if: runner.os == 'Windows'
+      run: |
+        choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --wait"
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
 
     - name: gclient sync
-      run: gclient sync
-
-    - name: Clone libwebrtc
-      uses: actions/checkout@v4
-      with:
-        repository: webrtc-sdk/webrtc
-        ref: refs/remotes/origin/master
+      working-directory: build
+      run: gclient sync --verbose
 
     - name: Add libwebrtc to default group
-      run: git apply .github/patches/add-libwebrtc-to-default-group.patch
+      working-directory: build/src
+      run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
-    # - name: Install Debian Dependencies
-    #   if: runner.os == 'Linux'
-    #   run: .github/scripts/install-debian-deps.sh
+    - name: Generate Ninja Build Files [Windows]
+      if: runner.os == 'Windows'
+      working-directory: build/src
+      run: gn gen out/Default --args="target_cpu=\"x64\" is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
 
-    # - name: Install macOS Dependencies
-    #   if: runner.os == 'macOS'
-    #   run: .github/scripts/install-macos-deps.sh
+    - name: Generate Ninja Build Files [Unix]
+      if: runner.os != 'Windows'
+      working-directory: build/src
+      run: gn gen out/Default --args="target_cpu=\"x64\" is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
 
-    # - name: Install Windows Dependencies
-    #   if: runner.os == 'Windows'
-    #   run: .github\scripts\install-windows-deps.ps1
+    - name: Install Debian Dependencies
+      if: runner.os == 'Linux'
+      run: .github/scripts/install-debian-deps.sh
 
+    - name: Install macOS Dependencies
+      if: runner.os == 'macOS'
+      run: .github/scripts/install-macos-deps.sh
+
+    - name: Install Windows Dependencies
+      if: runner.os == 'Windows'
+      run: .github\scripts\install-windows-deps.ps1
+
+    - name: Run Ninja Build
+      working-directory: build/src
+      run: ninja -C out/Default
