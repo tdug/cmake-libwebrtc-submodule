@@ -84,9 +84,15 @@ jobs:
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
-    - name: Generate Ninja Build Files
+    - name: Generate Ninja Build Files [Windows]
+      if: matrix.os == 'windows-latest'
       working-directory: build/src
-      run: gn gen out/Default
+      run: gn gen out/Default --args="target_os=\"win\" target_cpu=\"x64\" is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
+
+    - name: Generate Ninja Build Files [Linux]
+      if: matrix.os == 'ubuntu-latest'
+      working-directory: build/src
+      run: gn gen out/Default --args="target_os=\"linux\" target_cpu=\"x64\" is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
 
     # - name: Run Ninja Build
     #   working-directory: build/src
