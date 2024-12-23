@@ -48,10 +48,7 @@ jobs:
         GYP_GENERATORS: ninja,msvs-ninja
         GYP_MSVS_OVERRIDE_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2022\Community
       working-directory: build
-      run: |
-        python3 src/build/landmines.py --landmine-scripts src/tools_webrtc/get_landmines.py --src-dir src
-        python3 src/build/vs_toolchain.py update --force
-        gclient sync
+      run: gclient sync
 
     - name: Clone libwebrtc
       uses: actions/checkout@v4
