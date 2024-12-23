@@ -56,6 +56,11 @@ jobs:
       if: runner.os == 'Windows'
       run: .github\scripts\install-windows-deps.ps1
 
+    - name: Verify vcvarsall.bat
+      run: |
+        dir "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+
+
     # - name: Fetch libwebrtc [Unix]
     #   working-directory: build
     #   run: fetch --nohooks webrtc
