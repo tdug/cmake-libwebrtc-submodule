@@ -36,6 +36,10 @@ jobs:
         file: build/.gclient
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
 
+    - name: Fetch libwebrtc
+      working-directory: build
+      run: fetch webrtc
+
     - name: gclient sync [Unix]
       if: matrix.os != 'windows-latest'
       working-directory: build
@@ -50,17 +54,11 @@ jobs:
         GYP_MSVS_OVERRIDE_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2022\Community
       working-directory: build
       run: gclient sync --verbose
-    
-    - run: ls build
 
-    - name: Clone libwebrtc
-      uses: actions/checkout@v4
-      with:
-        repository: webrtc-sdk/webrtc
-        ref: refs/remotes/origin/main
-        destination: build/webrtc
+    - run: ls build/src
 
     - name: Add libwebrtc to default group
+      working-directory: build/src
       run: git apply .github/patches/add-libwebrtc-to-default-group.patch
 
     # - name: Install Debian Dependencies
