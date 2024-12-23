@@ -54,19 +54,19 @@ jobs:
       working-directory: build
       run: gclient sync --verbose
 
-    - name: Add libwebrtc to default group
-      working-directory: build/src
-      run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
+    # - name: Add libwebrtc to default group
+    #   working-directory: build/src
+    #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
     - name: Generate Ninja Build Files [Windows]
       if: runner.os == 'Windows'
       working-directory: build/src
-      run: gn gen out/Default --args="target_cpu=\"x64\" is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
+      run: gn gen out/Default --args="target_cpu=x64 is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
 
     - name: Generate Ninja Build Files [Unix]
       if: runner.os != 'Windows'
       working-directory: build/src
-      run: gn gen out/Default --args="target_cpu=\"x64\" is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
+      run: gn gen out/Default --args="target_cpu=x64 is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
 
     - name: Install Debian Dependencies
       if: runner.os == 'Linux'
