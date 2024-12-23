@@ -58,6 +58,12 @@ jobs:
     #   working-directory: build
     #   run: fetch --nohooks webrtc
 
+    - name: Cache libwebrtc
+      uses: actions/cache@v4
+      with:
+        path: ${{github.workspace}}/build
+        key: ${{runner.os}}-libwebrtc
+
     - name: gclient sync
       working-directory: build
       run: gclient sync --verbose
@@ -66,22 +72,22 @@ jobs:
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
-    - name: Install Debian Dependencies
-      if: runner.os == 'Linux'
-      run: .github/scripts/install-debian-deps.sh
+    # - name: Install Debian Dependencies
+    #   if: runner.os == 'Linux'
+    #   run: .github/scripts/install-debian-deps.sh
 
-    - name: Install macOS Dependencies
-      if: runner.os == 'macOS'
-      run: .github/scripts/install-macos-deps.sh
+    # - name: Install macOS Dependencies
+    #   if: runner.os == 'macOS'
+    #   run: .github/scripts/install-macos-deps.sh
 
-    - name: Install Windows Dependencies
-      if: runner.os == 'Windows'
-      run: .github\scripts\install-windows-deps.ps1
+    # - name: Install Windows Dependencies
+    #   if: runner.os == 'Windows'
+    #   run: .github\scripts\install-windows-deps.ps1
 
     - name: Generate Ninja Build Files
       working-directory: build/src
       run: gn gen out/Default
 
-    - name: Run Ninja Build
-      working-directory: build/src
-      run: ninja -C out/Default
+    # - name: Run Ninja Build
+    #   working-directory: build/src
+    #   run: ninja -C out/Default
