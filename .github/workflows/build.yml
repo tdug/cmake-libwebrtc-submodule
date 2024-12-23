@@ -71,18 +71,17 @@ jobs:
       working-directory: build/src
       run: git apply .github/patches/add-libwebrtc-to-default-group.patch
 
-    # Unsure if these are needed...
-    # - name: Install Debian Dependencies
-    #   if: runner.os == 'Linux'
-    #   run: .github/scripts/install-debian-deps.sh
+    - name: Install Debian Dependencies
+      if: runner.os == 'Linux'
+      run: .github/scripts/install-debian-deps.sh
 
-    # - name: Install macOS Dependencies
-    #   if: runner.os == 'macOS'
-    #   run: .github/scripts/install-macos-deps.sh
+    - name: Install macOS Dependencies
+      if: runner.os == 'macOS'
+      run: .github/scripts/install-macos-deps.sh
 
-    # - name: Install Windows Dependencies
-    #   if: runner.os == 'Windows'
-    #   run: .github\scripts\install-windows-deps.ps1
+    - name: Install Windows Dependencies
+      if: runner.os == 'Windows'
+      run: .github\scripts\install-windows-deps.ps1
 
     - name: Generate Ninja Build Files
       working-directory: build/src
