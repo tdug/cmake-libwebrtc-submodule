@@ -37,7 +37,7 @@ jobs:
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
 
     - name: Set Environment Variables [Windows]
-      if: matrix.os == 'windows-latest'
+      if: runner.os == 'Windows'
       run: |
         echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
@@ -57,6 +57,7 @@ jobs:
       run: .github\scripts\install-windows-deps.ps1
 
     - name: Verify vcvarsall.bat
+      if: runner.os == 'Windows'
       run: |
         dir "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
 
@@ -85,19 +86,19 @@ jobs:
       working-directory: build
       run: gclient sync --verbose
 
-    # - name: Add libwebrtc to default group
-    #   working-directory: build/src
-    #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
+    - name: Add libwebrtc to default group
+      working-directory: build/src
+      run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
     - name: Generate Ninja Build Files [Windows]
-      if: matrix.os == 'windows-latest'
+      if: runner.os == 'Windows'
       working-directory: build/src
-      run: gn gen out/Default --args="target_os=\"win\" target_cpu=\"x64\" is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
+      run: gn gen out/Default --args="target_cpu=\"x64\" is_component_build=false is_clang=true is_debug=true rtc_use_h264=true ffmpeg_branding=\"Chrome\" rtc_include_tests=false rtc_build_examples=false libwebrtc_desktop_capture=true" --ide=vs2022
 
-    - name: Generate Ninja Build Files [Linux]
-      if: matrix.os == 'ubuntu-latest'
+    - name: Generate Ninja Build Files [Unix]
+      if: runner.os != 'Windows'
       working-directory: build/src
-      run: gn gen out/Default --args="target_os=\"linux\" target_cpu=\"x64\" is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
+      run: gn gen out/Default --args="target_cpu=\"x64\" is_debug=true rtc_include_tests=false rtc_use_h264=true ffmpeg_branding=\"Chrome\" is_component_build=false use_rtti=true use_custom_libcxx=false rtc_enable_protobuf=false"
 
     # - name: Run Ninja Build
     #   working-directory: build/src
