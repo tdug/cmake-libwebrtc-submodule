@@ -27,16 +27,26 @@ jobs:
         echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
-        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
 
     - name: Set Up Visual Studio Components [Windows]
       if: runner.os == 'Windows'
       run: |
-        "& 'C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe' modify \
+        "C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe modify \
         --installPath 'C:\Program Files\Microsoft Visual Studio\2022\Community' \
         --add Microsoft.VisualStudio.Workload.VCTools \
         --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
         --passive --norestart"
+
+    - name: List All Visual Studio Installations (x86)
+      if: runner.os == 'Windows'
+      run: |
+        "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe -format json"
+
+    - name: List All Visual Studio Installations (x64)
+      if: runner.os == 'Windows'
+      run: |
+        "C:\Program Files\Microsoft Visual Studio\Installer\vswhere.exe -format json"
 
     - uses: actions/checkout@v4
 
@@ -62,7 +72,13 @@ jobs:
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
-    - name: Generate Ninja Build Files
+    - name: Generate Ninja Build Files [Windows]
+      if: runner.os == 'Windows'
+      working-directory: build/src
+      run: gn gen out/Default --args='rtc_include_tests=false rtc_build_examples=false cflags_cc=[\"-Wno-static-assert\"]'
+
+    - name: Generate Ninja Build Files [Unix]
+      if: runner.os != 'Windows'
       working-directory: build/src
       run: gn gen out/Default --args='rtc_include_tests=false rtc_build_examples=false cflags_cc=["-Wno-static-assert"]'
 
