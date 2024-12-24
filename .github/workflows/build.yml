@@ -38,11 +38,16 @@ jobs:
         --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
         --passive --norestart"
 
-    - name: vswhere
+    - name: List All Visual Studio Installations (x86)
       if: runner.os == 'Windows'
       run: |
-        "C:\Program Files\Microsoft Visual Studio\Installer\vswhere.exe -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath"
-  
+        "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe -format json"
+
+    - name: List All Visual Studio Installations (x64)
+      if: runner.os == 'Windows'
+      run: |
+        "C:\Program Files\Microsoft Visual Studio\Installer\vswhere.exe -format json"
+
     - uses: actions/checkout@v4
 
     - name: Install Depot Tools
