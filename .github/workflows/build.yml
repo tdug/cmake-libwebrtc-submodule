@@ -44,13 +44,23 @@ jobs:
         echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
         echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-    - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
+    # - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
+    #   if: runner.os == 'Windows'
+    #   run: |
+    #     choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet --wait"
+    #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community"
+    #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community"
+    #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC"
+    #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
+
+    - name: Set Up Visual Studio Components
       if: runner.os == 'Windows'
       run: |
-        choco install visualstudio2022community --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --includeRecommended --quiet --wait"
-        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community"
-        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC"
-        dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
+        "& 'C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe' modify \
+        --installPath 'C:\Program Files\Microsoft Visual Studio\2022\Community' \
+        --add Microsoft.VisualStudio.Workload.VCTools \
+        --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
+        --passive --norestart"
 
     - name: gclient sync
       working-directory: build
