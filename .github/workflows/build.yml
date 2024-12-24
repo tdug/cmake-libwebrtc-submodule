@@ -38,7 +38,7 @@ jobs:
         --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
         --passive --norestart"
 
-    - name: Set Up Visual Studio Environment
+    - name: vswhere
       if: runner.os == 'Windows'
       run: |
         "& 'C:\Program Files\Microsoft Visual Studio\Installer\vswhere.exe' -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath"
