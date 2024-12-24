@@ -62,7 +62,13 @@ jobs:
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
 
-    - name: Generate Ninja Build Files
+    - name: Generate Ninja Build Files [Windows]
+      if: runner.os == 'Windows'
+      working-directory: build/src
+      run: gn gen out/Default --args='rtc_include_tests=false rtc_build_examples=false cflags_cc=[\"-Wno-static-assert\"]'
+
+    - name: Generate Ninja Build Files [Unix]
+      if: runner.os != 'Windows'
       working-directory: build/src
       run: gn gen out/Default --args='rtc_include_tests=false rtc_build_examples=false cflags_cc=["-Wno-static-assert"]'
 
