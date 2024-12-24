@@ -21,6 +21,23 @@ jobs:
             gclient_os_tag: mac
     runs-on: ${{matrix.os}}
     steps:
+    - name: Set Environment Variables [Windows]
+      if: runner.os == 'Windows'
+      run: |
+        echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+    - name: Set Up Visual Studio Components [Windows]
+      if: runner.os == 'Windows'
+      run: |
+        "& 'C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe' modify \
+        --installPath 'C:\Program Files\Microsoft Visual Studio\2022\Community' \
+        --add Microsoft.VisualStudio.Workload.VCTools \
+        --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
+        --passive --norestart"
+
     - uses: actions/checkout@v4
 
     - name: Install Depot Tools
@@ -36,14 +53,6 @@ jobs:
         file: build/.gclient
         variables: 'gclient_os_tag=${{matrix.gclient_os_tag}}'
 
-    - name: Set Environment Variables [Windows]
-      if: runner.os == 'Windows'
-      run: |
-        echo "DEPOT_TOOLS_WIN_TOOLCHAIN=0" | Out-File -FilePath $env:GITHUB_ENV -Append
-        echo "GYP_MSVS_VERSION=2022" | Out-File -FilePath $env:GITHUB_ENV -Append
-        echo "GYP_GENERATORS=ninja,msvs-ninja" | Out-File -FilePath $env:GITHUB_ENV -Append
-        echo "GYP_MSVS_OVERRIDE_PATH=C:\Program Files (x86)\Microsoft Visual Studio\2022\Community" | Out-File -FilePath $env:GITHUB_ENV -Append
-
     # - name: Install Visual Studio Build Tools and Verify vcvarsall.bat
     #   if: runner.os == 'Windows'
     #   run: |
@@ -53,19 +62,11 @@ jobs:
     #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC"
     #     dir "C:\Program Files (x86)\Microsoft Visual Studio\Community\VC\vcvarsall.bat"
 
-    - name: Set Up Visual Studio Components
-      if: runner.os == 'Windows'
-      run: |
-        "& 'C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe' modify \
-        --installPath 'C:\Program Files\Microsoft Visual Studio\2022\Community' \
-        --add Microsoft.VisualStudio.Workload.VCTools \
-        --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
-        --passive --norestart"
-
     - name: gclient sync
       working-directory: build
       run: gclient sync --verbose
 
+    # This step is recommended by a third-party guide, but it is not necessary apparently.
     # - name: Add libwebrtc to default group
     #   working-directory: build/src
     #   run: git apply ${{github.workspace}}/.github/patches/add-libwebrtc-to-default-group.patch
