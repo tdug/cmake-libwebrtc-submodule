@@ -10,3 +10,4 @@ solutions = [
   },
 ]
 target_os  = ['{{gclient_os_tag}}']
+target_cpu = 'x64'
