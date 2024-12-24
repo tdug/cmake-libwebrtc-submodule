@@ -33,7 +33,7 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         "& 'C:\Program Files\Microsoft Visual Studio\Installer\vs_installer.exe' modify \
-        --installPath 'C:\Program Files\Microsoft Visual Studio\2022\Community' \
+        --installPath 'C:\Program Files (x86)\Microsoft Visual Studio\2022\Community' \
         --add Microsoft.VisualStudio.Workload.VCTools \
         --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 \
         --passive --norestart"
